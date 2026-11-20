@@ -1,0 +1,62 @@
+[
+  {
+    "id": "q01",
+    "question": "How many customers are there?",
+    "gold_sql": "SELECT COUNT(*) FROM customers"
+  },
+  {
+    "id": "q02",
+    "question": "How many orders were cancelled?",
+    "gold_sql": "SELECT COUNT(*) FROM orders WHERE status = 'cancelled'"
+  },
+  {
+    "id": "q03",
+    "question": "What is the total revenue from completed orders?",
+    "gold_sql": "SELECT ROUND(SUM(oi.quantity * oi.unit_price), 2) FROM order_items oi JOIN orders o USING(order_id) WHERE o.status = 'completed'"
+  },
+  {
+    "id": "q04",
+    "question": "Which product generated the most revenue from completed orders?",
+    "gold_sql": "SELECT p.name FROM order_items oi JOIN orders o USING(order_id) JOIN products p USING(product_id) WHERE o.status='completed' GROUP BY p.product_id ORDER BY SUM(oi.quantity*oi.unit_price) DESC LIMIT 1"
+  },
+  {
+    "id": "q05",
+    "question": "Which product category sold the most units in completed orders?",
+    "gold_sql": "SELECT p.category FROM order_items oi JOIN orders o USING(order_id) JOIN products p USING(product_id) WHERE o.status='completed' GROUP BY p.category ORDER BY SUM(oi.quantity) DESC LIMIT 1"
+  },
+  {
+    "id": "q06",
+    "question": "Which state has the most customers?",
+    "gold_sql": "SELECT state FROM customers GROUP BY state ORDER BY COUNT(*) DESC LIMIT 1"
+  },
+  {
+    "id": "q07",
+    "question": "What was the revenue from completed orders in March 2026?",
+    "gold_sql": "SELECT ROUND(SUM(oi.quantity*oi.unit_price), 2) FROM order_items oi JOIN orders o USING(order_id) WHERE o.status='completed' AND o.order_date BETWEEN '2026-03-01' AND '2026-03-31'"
+  },
+  {
+    "id": "q08",
+    "question": "What is the average order value of completed orders?",
+    "gold_sql": "SELECT ROUND(AVG(t), 2) FROM (SELECT SUM(oi.quantity*oi.unit_price) t FROM order_items oi JOIN orders o USING(order_id) WHERE o.status='completed' GROUP BY o.order_id)"
+  },
+  {
+    "id": "q09",
+    "question": "Which city's customers spent the most in completed orders?",
+    "gold_sql": "SELECT c.city FROM customers c JOIN orders o USING(customer_id) JOIN order_items oi USING(order_id) WHERE o.status='completed' GROUP BY c.city ORDER BY SUM(oi.quantity*oi.unit_price) DESC LIMIT 1"
+  },
+  {
+    "id": "q10",
+    "question": "How many units of the Standing Desk were sold in completed orders?",
+    "gold_sql": "SELECT SUM(oi.quantity) FROM order_items oi JOIN orders o USING(order_id) JOIN products p USING(product_id) WHERE o.status='completed' AND p.name='Standing Desk'"
+  },
+  {
+    "id": "q11",
+    "question": "Which month of 2026 had the most completed orders? Answer with the month number.",
+    "gold_sql": "SELECT CAST(strftime('%m', order_date) AS INTEGER) FROM orders WHERE status='completed' GROUP BY strftime('%m', order_date) ORDER BY COUNT(*) DESC LIMIT 1"
+  },
+  {
+    "id": "q12",
+    "question": "How many distinct customers placed at least one completed order in October 2026?",
+    "gold_sql": "SELECT COUNT(DISTINCT customer_id) FROM orders WHERE status='completed' AND order_date BETWEEN '2026-10-01' AND '2026-10-31'"
+  }
+]
